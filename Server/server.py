@@ -1,5 +1,6 @@
 import socket
 import select
+from database import Database
 
 #Coloured messages
 BLUE = '\033[1;34m'
@@ -11,6 +12,13 @@ DEFAULT = '\033[0m'
 HEADER_LENGTH = 10
 IP = "127.0.0.1"
 PORT = 8000
+
+try:
+    db = Database()
+
+except:
+    print(RED + f"Couldn't connect to the database. Exiting..." + DEFAULT)
+    exit(-1)
 
 #Server Configuration
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -48,7 +56,7 @@ while True:
             socket_list.append(client_socket)
             clients[client_socket] = user
             print(BLUE + "Accepted new connection from" + GREEN +
-             "{}:{}, username: {}".format(*client_address, user['data'].decode('utf-8')) + DEFAULT)
+             "{}:{}, message: {}".format(*client_address, user['data'].decode('utf-8')) + DEFAULT)
 
     for notified_socket in exception_sockets:
         socket_list.remove(notified_socket)
