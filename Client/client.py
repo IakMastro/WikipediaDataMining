@@ -1,6 +1,7 @@
 import socket
 from tkinter import *
 from tkinter import messagebox
+from wikipedia import Wikipedia
 
 #Network Configuration
 HEADER_LENGTH = 10
@@ -8,8 +9,8 @@ IP = '127.0.0.1'
 PORT = 8000
 username = "The Doctor"
 
-Ddef send_message(code):
-    message = f"{code}\n{name_entry.get()}\n1999/01/10\n2020/02/02"
+def send_message(code, query):
+    message = f"{code}\n{query}"
     message_header = f"{len(message):<{HEADER_LENGTH}}".encode('utf-8')
     client_socket.send(message_header + message.encode('utf-8'))
 
@@ -28,7 +29,10 @@ def recieve_message():
 
 #Adding and deleting functions, accessed by the buttons
 def add_entry():
-    send_message(1)
+    wiki = Wikipedia(url_entry.get())
+    name, birthday, deathday = wiki.scrap_person()
+    query = name + "\n" + birthday + "\n" + deathday
+    send_message(1, query)
     message = recieve_message()
     message = message['data'].decode('utf-8')
     if message == "OK":
@@ -38,7 +42,7 @@ def add_entry():
         messagebox.showwarning("Operation Failed.", "Person exists on the database already.")
 
 def delete_entry():
-    send_message(2)
+    send_message(2, name_entry.get())
     message = recieve_message()
     message = message['data'].decode('utf-8')
     if message == "OK":
@@ -50,8 +54,15 @@ def delete_entry():
 #GUI Configuration
 top = Tk()
 top.title("Wikipedia Data Mining")
+url_frame = Frame(top)
 name_frame = Frame(top)
 button_frame = Frame(top)
+
+url_label = Label(url_frame, text="URL")
+url_label.pack(side=LEFT)
+url_entry = Entry(url_frame, bd=5)
+url_entry.pack(side=RIGHT)
+url_frame.pack()
 
 name_label = Label(name_frame, text="Name")
 name_label.pack(side=LEFT)

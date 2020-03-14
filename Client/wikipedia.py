@@ -14,7 +14,7 @@ class Wikipedia:
             birthday = table.find("span", { "class": "bday" }).text
             deathday = table.find(text="Died").parent.find_next_siblings()
             deathday = deathday[0].find("span").text
-            return name, birthday, deathday
+            return name, birthday.replace("-", "/"), deathday.replace("-", "/").replace("(", "").replace(")", "")
 
         return None, None, None
 
