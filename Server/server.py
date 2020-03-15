@@ -98,6 +98,14 @@ while True:
             elif message[0] is "2":
                 delete_person(client_socket, message[1])
 
+            elif message[0] is "3":
+                query = ""
+                for person in db.select():
+                    query += str(person) + "\n"
+                print(query)
+
+                send_message(client_socket, query)
+
     for notified_socket in exception_sockets:
         socket_list.remove(notified_socket)
         del clients[notified_socket]

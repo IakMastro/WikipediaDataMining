@@ -38,3 +38,8 @@ class Database:
 
         except KeyError:
             return False
+
+    def select(self):
+        self.__cursor.execute("SELECT * FROM person");
+        records = self.__cursor.fetchall()
+        return records
